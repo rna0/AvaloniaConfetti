@@ -1,12 +1,11 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
 
 namespace AvaloniaConfetti
 {
@@ -53,19 +52,22 @@ namespace AvaloniaConfetti
             foreach (var kvp in _settings)
             {
                 var displayName = kvp.Key.ToLower().Replace('_', ' ');
-                var label = new TextBlock {
+                var label = new TextBlock
+                {
                     Text = displayName,
                     Margin = new Thickness(0, 8, 0, 0),
                     Width = 200,
                     VerticalAlignment = VerticalAlignment.Center
                 };
-                var input = new TextBox {
+                var input = new TextBox
+                {
                     Text = kvp.Value,
                     Width = 200,
                     VerticalAlignment = VerticalAlignment.Center
                 };
                 _settingInputs[kvp.Key] = input;
-                var row = new StackPanel {
+                var row = new StackPanel
+                {
                     Orientation = Orientation.Horizontal,
                     Spacing = 8,
                     VerticalAlignment = VerticalAlignment.Center
@@ -82,6 +84,7 @@ namespace AvaloniaConfetti
             {
                 _settings[key] = _settingInputs[key].Text ?? "";
             }
+
             var lines = _settings.Select(kvp => $"{kvp.Key}={kvp.Value}");
             File.WriteAllLines(_customEnvPath, lines);
             SettingsChanged?.Invoke();

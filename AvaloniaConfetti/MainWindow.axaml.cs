@@ -8,9 +8,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         var confettiLayer = this.FindControl<ConfettiLayer>("ConfettiLayer");
-        SettingsWindow.SettingsChanged += () =>
-        {
-            confettiLayer?.ReloadConfig();
-        };
+        SettingsWindow.SettingsChanged += () => { confettiLayer?.ReloadConfig(); };
     }
 }

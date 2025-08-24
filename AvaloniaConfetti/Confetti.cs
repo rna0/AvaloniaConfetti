@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
-using Avalonia.Media;
 using Avalonia;
+using Avalonia.Media;
 
 namespace AvaloniaConfetti
 {

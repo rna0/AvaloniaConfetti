@@ -1,0 +1,14 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="AvaloniaConfetti.SettingsWindow"
+        Title="Confetti Settings" Width="470" Height="600" Padding="0  24 0 0">
+    <ScrollViewer>
+        <StackPanel HorizontalAlignment="Center">
+            <StackPanel x:Name="SettingsPanel" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,16,0,0">
+                <Button Content="Save" x:Name="SaveButton" />
+                <Button Content="Reset to Default" x:Name="ResetButton" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

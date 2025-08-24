@@ -1,8 +1,8 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
 
 namespace AvaloniaConfetti;
 
@@ -42,6 +42,7 @@ public class App : Application
                     else
                         return;
                 }
+
                 var currentScreen = screens.FirstOrDefault(s => s.Bounds.Contains(mainWindow.Position));
                 int nextIndex;
                 if (currentScreen == null)
@@ -53,6 +54,7 @@ public class App : Application
                     var currentIndex = screens.ToList().IndexOf(currentScreen);
                     nextIndex = (currentIndex + 1) % screens.Count;
                 }
+
                 var nextScreen = screens.ElementAt(nextIndex);
                 mainWindow.Position = nextScreen.Bounds.Position;
                 mainWindow.WindowState = WindowState.Maximized;

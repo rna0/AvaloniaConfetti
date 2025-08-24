@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 
@@ -75,18 +74,29 @@ namespace AvaloniaConfetti
                         foreach (var pt in points)
                         {
                             var xy = pt.Split(',');
-                            // Parse as percentage (0-100)
                             if (xy.Length == 2 && float.TryParse(xy[0], out var x) && float.TryParse(xy[1], out var y))
                             {
-                                // Clamp between 0 and 100
                                 x = Math.Clamp(x, 0f, 100f);
                                 y = Math.Clamp(y, 0f, 100f);
                                 config.ShootingPoints.Add(new Vector2(x, y));
                             }
                         }
+
+                        break;
+                    case "CONFETTI_TARGET_POINT":
+                        var targetPoint = value.Split(',');
+                        if (targetPoint.Length == 2 && float.TryParse(targetPoint[0], out var tx) &&
+                            float.TryParse(targetPoint[1], out var ty))
+                        {
+                            tx = Math.Clamp(tx, 0f, 100f);
+                            ty = Math.Clamp(ty, 0f, 100f);
+                            config.TargetPoint = new Vector2(tx, ty);
+                        }
+
                         break;
                 }
             }
+
             return config;
         }
     }

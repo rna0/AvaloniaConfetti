@@ -19,7 +19,9 @@ namespace AvaloniaConfetti
 
         public ConfettiLayer()
         {
-            var envPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
+            var customEnvPath = Path.Combine(AppContext.BaseDirectory, "custom.env");
+            var defaultEnvPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
+            var envPath = File.Exists(customEnvPath) ? customEnvPath : defaultEnvPath;
             _config = ConfettiConfigLoader.Load(envPath);
             _manager = new ConfettiManager(_config);
             AttachedToVisualTree += (_, _) => OnAttached();
@@ -71,6 +73,15 @@ namespace AvaloniaConfetti
         {
             _timer?.Stop();
             _timer = null;
+        }
+
+        public void ReloadConfig()
+        {
+            var customEnvPath = Path.Combine(AppContext.BaseDirectory, "custom.env");
+            var defaultEnvPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
+            var envPath = File.Exists(customEnvPath) ? customEnvPath : defaultEnvPath;
+            _config = ConfettiConfigLoader.Load(envPath);
+            _manager = new ConfettiManager(_config);
         }
 
         public override void Render(DrawingContext context)

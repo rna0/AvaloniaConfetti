@@ -81,6 +81,8 @@ jobs:
           </dict>
           </plist>
           PLIST
+          find "$APP/Contents/MacOS" -name "*.dylib" -exec codesign --force --sign - {} \;
+          codesign --force --deep --sign - "$APP"
           tar -czf AvaloniaConfetti-${{ matrix.rid }}.tar.gz "$APP"
 
       - name: Archive (Linux)

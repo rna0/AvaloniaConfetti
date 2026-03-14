@@ -47,8 +47,44 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path publish/${{ matrix.rid }}/* -DestinationPath AvaloniaConfetti-${{ matrix.rid }}.zip
 
-      - name: Archive (Linux/macOS)
-        if: matrix.rid != 'win-x64'
+      - name: Create macOS .app bundle
+        if: startsWith(matrix.rid, 'osx')
+        run: |
+          APP="AvaloniaConfetti.app"
+          mkdir -p "$APP/Contents/MacOS"
+          mkdir -p "$APP/Contents/Resources"
+          cp -a publish/${{ matrix.rid }}/* "$APP/Contents/MacOS/"
+          chmod +x "$APP/Contents/MacOS/AvaloniaConfetti"
+          cat > "$APP/Contents/Info.plist" << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleName</key>
+            <string>AvaloniaConfetti</string>
+            <key>CFBundleDisplayName</key>
+            <string>AvaloniaConfetti</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.avaloniaconfetti.app</string>
+            <key>CFBundleVersion</key>
+            <string>1.0</string>
+            <key>CFBundleShortVersionString</key>
+            <string>1.0</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+            <key>CFBundleExecutable</key>
+            <string>AvaloniaConfetti</string>
+            <key>LSUIElement</key>
+            <true/>
+            <key>NSHighResolutionCapable</key>
+            <true/>
+          </dict>
+          </plist>
+          PLIST
+          tar -czf AvaloniaConfetti-${{ matrix.rid }}.tar.gz "$APP"
+
+      - name: Archive (Linux)
+        if: matrix.rid == 'linux-x64'
         run: |
           cd publish/${{ matrix.rid }}
           chmod +x AvaloniaConfetti || true

@@ -1,14 +1,246 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="AvaloniaConfetti.SettingsWindow"
-        Title="Confetti Settings" Width="470" Height="600" Padding="0  24 0 0">
-    <ScrollViewer>
-        <StackPanel HorizontalAlignment="Center">
-            <StackPanel x:Name="SettingsPanel" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,16,0,0">
-                <Button Content="Save" x:Name="SaveButton" />
-                <Button Content="Reset to Default" x:Name="ResetButton" />
-            </StackPanel>
+        Title="Confetti Settings"
+        Width="520" Height="740"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        Padding="0 24 0 0">
+
+    <Window.Styles>
+        <!-- Section card style -->
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="20 16" />
+            <Setter Property="Margin" Value="0 0 0 12" />
+        </Style>
+
+        <!-- Section header text -->
+        <Style Selector="TextBlock.sectionHeader">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0 0 0 12" />
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+
+        <!-- Slider row label -->
+        <Style Selector="TextBlock.sliderLabel">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Opacity" Value="0.78" />
+        </Style>
+
+        <!-- Slider row value display -->
+        <Style Selector="TextBlock.sliderValue">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Opacity" Value="0.9" />
+        </Style>
+
+        <!-- Slider styling -->
+        <Style Selector="Slider">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="8 0" />
+        </Style>
+
+        <!-- Color swatch circle -->
+        <Style Selector="Border.colorSwatch">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+        </Style>
+    </Window.Styles>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24 8 24 24" Spacing="0">
+
+            <!-- Window Title -->
+            <TextBlock Text="🎊 Confetti Settings"
+                       FontSize="22" FontWeight="Bold"
+                       Margin="4 0 0 20" />
+
+            <!-- ═══════════════ EMISSION SECTION ═══════════════ -->
+            <Border Classes="card">
+                <StackPanel>
+                    <TextBlock Classes="sectionHeader" Text="Emission" />
+
+                    <!-- Particle Count -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 8">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Particle Count" />
+                        <Slider Grid.Column="1" x:Name="ParticleCountSlider"
+                                Minimum="1" Maximum="200" TickFrequency="1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="ParticleCountValue" />
+                    </Grid>
+
+                    <!-- Angle -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 8">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Angle" />
+                        <Slider Grid.Column="1" x:Name="AngleSlider"
+                                Minimum="0" Maximum="360" TickFrequency="1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="AngleValue" />
+                    </Grid>
+
+                    <!-- Spread -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 8">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Spread" />
+                        <Slider Grid.Column="1" x:Name="SpreadSlider"
+                                Minimum="0" Maximum="360" TickFrequency="1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="SpreadValue" />
+                    </Grid>
+
+                    <!-- Start Velocity -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 8">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Start Velocity" />
+                        <Slider Grid.Column="1" x:Name="StartVelocitySlider"
+                                Minimum="1" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="StartVelocityValue" />
+                    </Grid>
+
+                    <!-- Confetti Per Second -->
+                    <Grid ColumnDefinitions="130,*,50">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Per Second" />
+                        <Slider Grid.Column="1" x:Name="ConfettiPerSecondSlider"
+                                Minimum="1" Maximum="300" TickFrequency="1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="ConfettiPerSecondValue" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════ PHYSICS SECTION ═══════════════ -->
+            <Border Classes="card">
+                <StackPanel>
+                    <TextBlock Classes="sectionHeader" Text="Physics" />
+
+                    <!-- Decay -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 8">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Decay" />
+                        <Slider Grid.Column="1" x:Name="DecaySlider"
+                                Minimum="0" Maximum="1" TickFrequency="0.01" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="DecayValue" />
+                    </Grid>
+
+                    <!-- Gravity -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 8">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Gravity" />
+                        <Slider Grid.Column="1" x:Name="GravitySlider"
+                                Minimum="0" Maximum="5" TickFrequency="0.1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="GravityValue" />
+                    </Grid>
+
+                    <!-- Drift -->
+                    <Grid ColumnDefinitions="130,*,50">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Drift" />
+                        <Slider Grid.Column="1" x:Name="DriftSlider"
+                                Minimum="-5" Maximum="5" TickFrequency="0.1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="DriftValue" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════ LIFECYCLE SECTION ═══════════════ -->
+            <Border Classes="card">
+                <StackPanel>
+                    <TextBlock Classes="sectionHeader" Text="Lifecycle" />
+
+                    <!-- Ticks -->
+                    <Grid ColumnDefinitions="130,*,50">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Duration" />
+                        <Slider Grid.Column="1" x:Name="TicksSlider"
+                                Minimum="10" Maximum="1000" TickFrequency="1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="TicksValue" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════ APPEARANCE SECTION ═══════════════ -->
+            <Border Classes="card">
+                <StackPanel>
+                    <TextBlock Classes="sectionHeader" Text="Appearance" />
+
+                    <!-- Scalar -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 12">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Size Scale" />
+                        <Slider Grid.Column="1" x:Name="ScalarSlider"
+                                Minimum="0.1" Maximum="5" TickFrequency="0.1" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="ScalarValue" />
+                    </Grid>
+
+                    <!-- Flat toggle -->
+                    <Grid ColumnDefinitions="130,*" Margin="0 0 0 12">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Flat Mode" />
+                        <ToggleSwitch Grid.Column="1" x:Name="FlatToggle"
+                                      OnContent="On" OffContent="Off" />
+                    </Grid>
+
+                    <!-- Shapes -->
+                    <TextBlock Classes="sliderLabel" Text="Shapes" Margin="0 0 0 6" />
+                    <StackPanel Orientation="Horizontal" Spacing="16" Margin="0 0 0 4">
+                        <CheckBox x:Name="SquareCheck" Content="Square" />
+                        <CheckBox x:Name="CircleCheck" Content="Circle" />
+                        <CheckBox x:Name="StarCheck" Content="Star" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════ ORIGIN SECTION ═══════════════ -->
+            <Border Classes="card">
+                <StackPanel>
+                    <TextBlock Classes="sectionHeader" Text="Spawn Origin" />
+
+                    <!-- Origin X -->
+                    <Grid ColumnDefinitions="130,*,50" Margin="0 0 0 8">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Horizontal" />
+                        <Slider Grid.Column="1" x:Name="OriginXSlider"
+                                Minimum="0" Maximum="1" TickFrequency="0.01" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="OriginXValue" />
+                    </Grid>
+
+                    <!-- Origin Y -->
+                    <Grid ColumnDefinitions="130,*,50">
+                        <TextBlock Grid.Column="0" Classes="sliderLabel" Text="Vertical" />
+                        <Slider Grid.Column="1" x:Name="OriginYSlider"
+                                Minimum="0" Maximum="1" TickFrequency="0.01" IsSnapToTickEnabled="True" />
+                        <TextBlock Grid.Column="2" Classes="sliderValue" x:Name="OriginYValue" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════ COLORS SECTION ═══════════════ -->
+            <Border Classes="card">
+                <StackPanel>
+                    <TextBlock Classes="sectionHeader" Text="Colors" />
+
+                    <!-- Color swatches -->
+                    <WrapPanel x:Name="ColorSwatchPanel" Margin="0 0 0 10" />
+
+                    <!-- Color input -->
+                    <TextBox x:Name="ColorsInput"
+                             Watermark="Comma-separated hex values, e.g. #26ccff,#a25afd"
+                             FontSize="12" />
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════ BUTTONS ═══════════════ -->
+            <Grid ColumnDefinitions="*,Auto,Auto" Margin="0 8 0 0">
+                <Button Grid.Column="1" x:Name="ResetButton"
+                        Content="Reset Defaults"
+                        Margin="0 0 10 0"
+                        Padding="16 8" />
+                <Button Grid.Column="2" x:Name="SaveButton"
+                        Content="Save &amp; Apply"
+                        Classes="accent"
+                        Padding="20 8"
+                        FontWeight="SemiBold" />
+            </Grid>
+
         </StackPanel>
     </ScrollViewer>
 </Window>

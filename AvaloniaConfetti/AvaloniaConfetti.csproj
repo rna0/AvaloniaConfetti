@@ -9,7 +9,6 @@
         <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
         <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>partial</TrimMode>
-        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">

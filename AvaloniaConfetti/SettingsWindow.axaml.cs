@@ -35,7 +35,7 @@ namespace AvaloniaConfetti
 
         private void LoadSettings()
         {
-            string envPath = File.Exists(_customEnvPath) ? _customEnvPath : _defaultEnvPath;
+            string envPath = ConfettiConfigLoader.ResolveEnvPath();
             _settings = File.ReadAllLines(envPath)
                 .Select(line => line.Trim())
                 .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
@@ -78,11 +78,48 @@ namespace AvaloniaConfetti
             }
         }
 
+        private static readonly HashSet<string> PointKeys =
+            ["CONFETTI_SHOOT_POINTS", "CONFETTI_TARGET_POINT"];
+
+        private static bool IsValidValue(string key, string value)
+        {
+            if (PointKeys.Contains(key))
+                return !string.IsNullOrWhiteSpace(value);
+
+            if (key == "CONFETTI_PER_SECOND")
+                return int.TryParse(value, out _);
+
+            return double.TryParse(value, out _);
+        }
+
         private void SaveButton_Click(object? sender, RoutedEventArgs e)
         {
+            var errors = new List<string>();
             foreach (var key in _settingInputs.Keys)
             {
-                _settings[key] = _settingInputs[key].Text ?? "";
+                var text = _settingInputs[key].Text ?? "";
+                if (!IsValidValue(key, text))
+                    errors.Add(key.ToLower().Replace('_', ' '));
+                else
+                    _settings[key] = text;
+            }
+
+            if (errors.Count > 0)
+            {
+                var errorWindow = new Window
+                {
+                    Title = "Validation Error",
+                    Width = 350,
+                    Height = 150,
+                    Content = new TextBlock
+                    {
+                        Text = $"Invalid values for: {string.Join(", ", errors)}",
+                        Margin = new Thickness(16),
+                        TextWrapping = Avalonia.Media.TextWrapping.Wrap
+                    }
+                };
+                errorWindow.ShowDialog(this);
+                return;
             }
 
             var lines = _settings.Select(kvp => $"{kvp.Key}={kvp.Value}");

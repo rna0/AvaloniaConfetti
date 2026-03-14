@@ -6,7 +6,7 @@ namespace AvaloniaConfetti
     public class ConfettiConfig
     {
         public List<Vector2> ShootingPoints { get; } = [];
-        public Vector2 TargetPoint { get; set; }
+        public Vector2 TargetPoint { get; set; } = new(50, 0);
         public int ConfettiPerSecond { get; set; }
         public double MinStrength { get; set; }
         public double MaxStrength { get; set; }

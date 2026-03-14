@@ -6,6 +6,13 @@ namespace AvaloniaConfetti
 {
     public static class ConfettiConfigLoader
     {
+        public static string ResolveEnvPath()
+        {
+            var customEnvPath = Path.Combine(AppContext.BaseDirectory, "custom.env");
+            var defaultEnvPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
+            return File.Exists(customEnvPath) ? customEnvPath : defaultEnvPath;
+        }
+
         public static ConfettiConfig Load(string path)
         {
             if (!File.Exists(path))

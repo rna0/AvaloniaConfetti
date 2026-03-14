@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,10 +17,7 @@ namespace AvaloniaConfetti
 
         public ConfettiLayer()
         {
-            var customEnvPath = Path.Combine(AppContext.BaseDirectory, "custom.env");
-            var defaultEnvPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
-            var envPath = File.Exists(customEnvPath) ? customEnvPath : defaultEnvPath;
-            _config = ConfettiConfigLoader.Load(envPath);
+            _config = ConfettiConfigLoader.Load(ConfettiConfigLoader.ResolveEnvPath());
             _manager = new ConfettiManager(_config);
             AttachedToVisualTree += (_, _) => OnAttached();
             DetachedFromVisualTree += (_, _) => OnDetached();
@@ -76,10 +72,7 @@ namespace AvaloniaConfetti
 
         public void ReloadConfig()
         {
-            var customEnvPath = Path.Combine(AppContext.BaseDirectory, "custom.env");
-            var defaultEnvPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
-            var envPath = File.Exists(customEnvPath) ? customEnvPath : defaultEnvPath;
-            _config = ConfettiConfigLoader.Load(envPath);
+            _config = ConfettiConfigLoader.Load(ConfettiConfigLoader.ResolveEnvPath());
             _manager = new ConfettiManager(_config);
         }
 

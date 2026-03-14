@@ -1,15 +1,22 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Numerics;
+using System.Linq;
+using Avalonia.Media;
 
 namespace AvaloniaConfetti
 {
     public static class ConfettiConfigLoader
     {
+        public static string AppBase { get; } =
+            Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)
+            ?? AppContext.BaseDirectory;
+
         public static string ResolveEnvPath()
         {
-            var customEnvPath = Path.Combine(AppContext.BaseDirectory, "custom.env");
-            var defaultEnvPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
+            var customEnvPath = Path.Combine(AppBase, "custom.env");
+            var defaultEnvPath = Path.Combine(AppBase, "confetti.env");
             return File.Exists(customEnvPath) ? customEnvPath : defaultEnvPath;
         }
 
@@ -30,81 +37,93 @@ namespace AvaloniaConfetti
                 var value = parts[1].Trim();
                 switch (key)
                 {
+                    case "PARTICLE_COUNT":
+                        config.ParticleCount = int.Parse(value);
+                        break;
+                    case "ANGLE":
+                        config.Angle = double.Parse(value);
+                        break;
+                    case "SPREAD":
+                        config.Spread = double.Parse(value);
+                        break;
+                    case "START_VELOCITY":
+                        config.StartVelocity = double.Parse(value);
+                        break;
+                    case "DECAY":
+                        config.Decay = double.Parse(value);
+                        break;
+                    case "GRAVITY":
+                        config.Gravity = double.Parse(value);
+                        break;
+                    case "DRIFT":
+                        config.Drift = double.Parse(value);
+                        break;
+                    case "TICKS":
+                        config.Ticks = int.Parse(value);
+                        break;
+                    case "SCALAR":
+                        config.Scalar = double.Parse(value);
+                        break;
+                    case "FLAT":
+                        config.Flat = bool.Parse(value);
+                        break;
+                    case "ORIGIN_X":
+                        config.OriginX = double.Parse(value);
+                        break;
+                    case "ORIGIN_Y":
+                        config.OriginY = double.Parse(value);
+                        break;
                     case "CONFETTI_PER_SECOND":
                         config.ConfettiPerSecond = int.Parse(value);
                         break;
-                    case "CONFETTI_MIN_STRENGTH":
-                        config.MinStrength = double.Parse(value);
+                    case "SHAPES":
+                        config.Shapes = ParseShapes(value);
                         break;
-                    case "CONFETTI_MAX_STRENGTH":
-                        config.MaxStrength = double.Parse(value);
-                        break;
-                    case "CONFETTI_GRAVITY":
-                        config.Gravity = double.Parse(value);
-                        break;
-                    case "CONFETTI_SPREAD_FACTOR":
-                        config.SpreadFactor = double.Parse(value);
-                        break;
-                    case "CONFETTI_VERTICAL_RANDOMNESS":
-                        config.VerticalRandomness = double.Parse(value);
-                        break;
-                    case "CONFETTI_MIN_SHEER":
-                        config.MinSheer = double.Parse(value);
-                        break;
-                    case "CONFETTI_MAX_SHEER":
-                        config.MaxSheer = double.Parse(value);
-                        break;
-                    case "CONFETTI_MIN_SHEER_VELOCITY":
-                        config.MinSheerVelocity = double.Parse(value);
-                        break;
-                    case "CONFETTI_MAX_SHEER_VELOCITY":
-                        config.MaxSheerVelocity = double.Parse(value);
-                        break;
-                    case "CONFETTI_SIZE_MIN":
-                        config.SizeMin = double.Parse(value);
-                        break;
-                    case "CONFETTI_SIZE_MAX":
-                        config.SizeMax = double.Parse(value);
-                        break;
-                    case "CONFETTI_MIN_ROTATION_VELOCITY":
-                        config.MinRotationVelocity = double.Parse(value);
-                        break;
-                    case "CONFETTI_MAX_ROTATION_VELOCITY":
-                        config.MaxRotationVelocity = double.Parse(value);
-                        break;
-                    case "CONFETTI_OUT_OF_BOUNDS_MARGIN":
-                        config.OutOfBoundsMargin = double.Parse(value);
-                        break;
-                    case "CONFETTI_SHOOT_POINTS":
-                        config.ShootingPoints.Clear();
-                        var points = value.Split(';');
-                        foreach (var pt in points)
-                        {
-                            var xy = pt.Split(',');
-                            if (xy.Length == 2 && float.TryParse(xy[0], out var x) && float.TryParse(xy[1], out var y))
-                            {
-                                x = Math.Clamp(x, 0f, 100f);
-                                y = Math.Clamp(y, 0f, 100f);
-                                config.ShootingPoints.Add(new Vector2(x, y));
-                            }
-                        }
-
-                        break;
-                    case "CONFETTI_TARGET_POINT":
-                        var targetPoint = value.Split(',');
-                        if (targetPoint.Length == 2 && float.TryParse(targetPoint[0], out var tx) &&
-                            float.TryParse(targetPoint[1], out var ty))
-                        {
-                            tx = Math.Clamp(tx, 0f, 100f);
-                            ty = Math.Clamp(ty, 0f, 100f);
-                            config.TargetPoint = new Vector2(tx, ty);
-                        }
-
+                    case "COLORS":
+                        config.Colors = ParseColors(value);
                         break;
                 }
             }
 
             return config;
+        }
+
+        private static List<ConfettiShape> ParseShapes(string value)
+        {
+            var shapes = new List<ConfettiShape>();
+            foreach (var s in value.Split(',').Select(s => s.Trim().ToLower()))
+            {
+                switch (s)
+                {
+                    case "square":
+                        shapes.Add(ConfettiShape.Square);
+                        break;
+                    case "circle":
+                        shapes.Add(ConfettiShape.Circle);
+                        break;
+                    case "star":
+                        shapes.Add(ConfettiShape.Star);
+                        break;
+                }
+            }
+            return shapes.Count > 0 ? shapes : [ConfettiShape.Square, ConfettiShape.Circle];
+        }
+
+        private static List<Color> ParseColors(string value)
+        {
+            var colors = new List<Color>();
+            foreach (var c in value.Split(',').Select(c => c.Trim()))
+            {
+                try
+                {
+                    colors.Add(Color.Parse(c));
+                }
+                catch
+                {
+                    // skip invalid colors
+                }
+            }
+            return colors.Count > 0 ? colors : new ConfettiConfig().Colors;
         }
     }
 }

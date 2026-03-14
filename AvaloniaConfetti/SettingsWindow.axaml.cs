@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,11 +18,15 @@ namespace AvaloniaConfetti
 
         public static event Action? SettingsChanged;
 
+        private static readonly HashSet<string> IntKeys = ["PARTICLE_COUNT", "TICKS", "CONFETTI_PER_SECOND"];
+        private static readonly HashSet<string> BoolKeys = ["FLAT"];
+        private static readonly HashSet<string> StringKeys = ["SHAPES", "COLORS"];
+
         public SettingsWindow()
         {
             InitializeComponent();
-            _customEnvPath = Path.Combine(AppContext.BaseDirectory, "custom.env");
-            _defaultEnvPath = Path.Combine(AppContext.BaseDirectory, "confetti.env");
+            _customEnvPath = Path.Combine(ConfettiConfigLoader.AppBase, "custom.env");
+            _defaultEnvPath = Path.Combine(ConfettiConfigLoader.AppBase, "confetti.env");
             LoadSettings();
             BuildSettingsControls();
             var saveButton = this.FindControl<Button>("SaveButton");
@@ -62,7 +66,7 @@ namespace AvaloniaConfetti
                 var input = new TextBox
                 {
                     Text = kvp.Value,
-                    Width = 200,
+                    Width = 250,
                     VerticalAlignment = VerticalAlignment.Center
                 };
                 _settingInputs[kvp.Key] = input;
@@ -78,16 +82,16 @@ namespace AvaloniaConfetti
             }
         }
 
-        private static readonly HashSet<string> PointKeys =
-            ["CONFETTI_SHOOT_POINTS", "CONFETTI_TARGET_POINT"];
-
         private static bool IsValidValue(string key, string value)
         {
-            if (PointKeys.Contains(key))
-                return !string.IsNullOrWhiteSpace(value);
-
-            if (key == "CONFETTI_PER_SECOND")
+            if (IntKeys.Contains(key))
                 return int.TryParse(value, out _);
+
+            if (BoolKeys.Contains(key))
+                return bool.TryParse(value, out _);
+
+            if (StringKeys.Contains(key))
+                return !string.IsNullOrWhiteSpace(value);
 
             return double.TryParse(value, out _);
         }

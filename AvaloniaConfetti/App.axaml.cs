@@ -1,4 +1,4 @@
-using System;
+using System.IO;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -54,7 +54,7 @@ public class App : Application
 
         return new TrayIcon
         {
-            Icon = new WindowIcon("Assets/AppIcon.ico"),
+            Icon = new WindowIcon(Path.Combine(ConfettiConfigLoader.AppBase, "Assets", "AppIcon.ico")),
             ToolTipText = "AvaloniaConfetti",
             Menu = nativeMenu
         };
@@ -76,10 +76,10 @@ public class App : Application
     private static void MoveToNextMonitor(IClassicDesktopStyleApplicationLifetime desktop)
     {
         if (desktop.MainWindow is not { } mainWindow) return;
-        var screens = mainWindow.Screens?.All;
-        if (screens == null || screens.Count == 0)
+        var screens = mainWindow.Screens.All;
+        if (screens.Count == 0)
         {
-            var primary = mainWindow.Screens?.Primary;
+            var primary = mainWindow.Screens.Primary;
             if (primary != null)
                 screens = [primary];
             else
